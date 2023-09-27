@@ -61,6 +61,7 @@ gratings we used were films attached to a rigid surfaces, the correct transforma
 
 
 ## References
+[Description of Diffraction Grating Behavior in Direction Cosine Space](https://doi.org/10.1364/ao.37.008158):
 
 ```
 @article{Harvey1998,
