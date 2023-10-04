@@ -68,7 +68,8 @@ Modules in this package can be used to undistort (convert) the first image below
 
 <img src="images/devicecal/21/20230511_141541_dec4_undistorted.png" width="800" class="center"/>
 
-For details of the procedure, see [application1 live script](matlab/notebooks/application2_correcting_for_imperfect_gratings.mlx).
+For details of the procedure, see [application2 live script](matlab/notebooks/application2_correcting_for_imperfect_gratings.mlx). 
+(live script is matlab's equivalent to jupyter notebook)
 
 To generate basic diffraction patterns, see [basic_usage.m](matlab/basic_usage.m).
 
