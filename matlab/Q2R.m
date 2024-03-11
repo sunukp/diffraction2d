@@ -14,14 +14,14 @@ end
 
 ctr = (dims+1)/2;
 
-XR = NaN(length(ptsQ), 1);
-YR = NaN(length(ptsQ), 1);
-Z = NaN(length(ptsQ), 1);
+ptsR_x = NaN(length(ptsQ), 1);
+ptsR_y = NaN(length(ptsQ), 1);
+z = NaN(length(ptsQ), 1);
 mask = ptsQ(:,1).^2 + ptsQ(:,2).^2 <= 1;
-Z(mask) = sqrt(1 - ptsQ(mask,1).^2 - ptsQ(mask,2).^2);
+z(mask) = sqrt(1 - ptsQ(mask,1).^2 - ptsQ(mask,2).^2);
 
-XR(mask) = ptsQ(mask, 1)*f./Z(mask)/pix + ctr(1);
-YR(mask) = ptsQ(mask, 2)*f./Z(mask)/pix + ctr(2);
+ptsR_x(mask) = ptsQ(mask, 1)*f./z(mask)/pix + ctr(1);
+ptsR_y(mask) = ptsQ(mask, 2)*f./z(mask)/pix + ctr(2);
 
-ptsR = [XR, YR];
+ptsR = [ptsR_x, ptsR_y];
 end
