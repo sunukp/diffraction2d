@@ -1,5 +1,5 @@
-function [dptspX, dptspY, dist2, boundaries]=finddiffrpts(img, mord, unit, ...
-    shiftfac, yxratio, theta, thres, boxw, dims, pix, f)
+function [dptspX, dptspY, dist2, boundaries]=finddffrpts(img, mord, unit, ...
+    shiftfac, yxratio, theta, thres, boxw, dims, pix, f, is_dffr, ctr)
 % Uses matlab's regionprops() (via wrapper findlargestcentroid()) to find
 % diffraction patterns within the passed in img.
 % img: the image that contains diffraction pts. The image needs to be in
@@ -45,29 +45,46 @@ end
 if nargin<11 || isempty(f)
     f=1.8;
 end
+if nargin<12 || isempty(is_dffr)
+    is_dffr = true;
+end
+if nargin<13 || isempty(ctr)
+    ctr = (dims+1)/2;
+end
 
-% We need ctr to be int, unlike in other functions in this lib, as we will
-% use it in img coordinates
-ctr=round(dims/2); 
 
-[X, Y]=gendiffr2d(unit, mord, shiftfac, yxratio, theta, dims, pix, f);
-dptspX=NaN(2*mord+1);
-dptspY=NaN(2*mord+1);
-dist2=NaN(2*mord+1);
+if is_dffr
+    [X, Y] = gendiffr2d(unit, mord, shiftfac, yxratio, theta, dims, pix, f);
+else
+    [X, Y] = gengrid2d(unit, mord, shiftfac, yxratio, theta);
+end
+
+if isscalar(mord)
+    nx = 2*mord+1;
+    ny = 2*mord+1;
+else
+    nx = mord(2)-mord(1)+1;
+    ny = mord(4)-mord(3)+1;
+end
+
+dptspX=NaN(ny, nx);
+dptspY=NaN(ny, nx);
+dist2=NaN(ny, nx);
 boundaries=[];
 
-for k=1:2*mord+1 % x
-    for j=1:2*mord+1 % y
-        xl=round(X(j,k)-boxw)+ctr(1); % xlower bound
-        xu=round(X(j,k)+boxw)+ctr(1); % xupper bound
-        yl=round(Y(j,k)-boxw)+ctr(2); % ylower bound
-        yu=round(Y(j,k)+boxw)+ctr(2); % yupper bound
+
+for k=1:nx % x
+    for j=1:ny % y
+        xl=round(X(j,k)-boxw+ctr(1)); % xlower bound
+        xu=round(X(j,k)+boxw+ctr(1)); % xupper bound
+        yl=round(Y(j,k)-boxw+ctr(2)); % ylower bound
+        yu=round(Y(j,k)+boxw+ctr(2)); % yupper bound
         boundaries=[boundaries; xl, xu, yl, yu];
-        if yu<yl || xu<xl
+        if yu<yl || xu<xl || isnan(xl) || isnan(xu) || isnan(yl) || isnan(yu)
             continue;
         end
         
-        if xl<1 % XXX need this bound for upper etc too
+        if xl<1
             xl=1;
         end
         if yl<1

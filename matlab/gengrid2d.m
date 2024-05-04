@@ -2,6 +2,7 @@ function [X, Y]=gengrid2d(unit, mord, shiftfac, yxratio, theta)
 % Creates a centered (mord x mord) grid in the direction cosine space with 
 % pitch=unit, then shifts (translates), adjusts aspect ratio, and rotates, 
 % when necessary.
+% mord: order of diffraction, can be scalar, or [min_x max_x min_y max_y]
 % shiftfac: shift factor, translates the coordinates by shiftfac*unit
 % yxration: y/x ratio
 % theta: rotation angle in degrees
@@ -15,8 +16,14 @@ if nargin<5 || isempty(theta)
     theta=0;
 end
 
-x = (-mord:mord)*unit;
-[X, Y] = meshgrid(x, x);
+if isscalar(mord)
+    x = (-mord:mord)*unit;
+    [X, Y] = meshgrid(x, x);
+else
+    x = (mord(1):mord(2))*unit;
+    y = (mord(3):mord(4))*unit;
+    [X, Y] = meshgrid(x, y);
+end
 
 % shift grid to be projected to screen by a factor of the unit
 if abs(shiftfac(1))>0 || abs(shiftfac(2))>0
